@@ -24,3 +24,6 @@ class CollaborativeList(models.Model):
     name = models.CharField(max_length=128, default="none")
     songs = models.ManyToManyField(Song)
     users = models.ManyToManyField(User)
+
+    def __str__(self):
+        return self.name
