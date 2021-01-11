@@ -46,3 +46,21 @@ def sortList(request, playlistID):
         response += '"' + str(song) + '", '
     response += ' ]'
     return HttpResponse('"message" : ' + response)
+
+
+# GET recognise_song
+def recognise_song(request, data):
+    try:
+        song_data = Song.objects.filter(name=data)
+    except Song.DoesNotExist:
+        return HttpResponse('"message" : "Could not recognise song"')
+
+    response = "["
+    for song in song_data:
+        response += '{\n"song_name" : "' + str(song.name) + \
+                    '",\n"song_artist" : "' + str(song.author) + \
+                    '",\n"song_album" : "' + str(song.album) + \
+                    '",\n"song_duration" : "' + str(song.duration) + '"\n},\n'
+    response += "]"
+
+    return HttpResponse(response)
