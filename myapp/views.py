@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from myapp.models import CollaborativeList, Song
 from django.http import HttpResponse
+import random
 
 
 # Create your views here.
@@ -49,18 +50,15 @@ def sortList(request, playlistID):
 
 
 # GET recognise_song
-def recognise_song(request, data):
+def recognise_song(request):
     try:
-        song_data = Song.objects.filter(name=data)
+        random_song = Song.objects.get(id=random.randint(0, 6))
     except Song.DoesNotExist:
         return HttpResponse('"message" : "Could not recognise song"')
 
-    response = "["
-    for song in song_data:
-        response += '{\n"song_name" : "' + str(song.name) + \
-                    '",\n"song_artist" : "' + str(song.author) + \
-                    '",\n"song_album" : "' + str(song.album) + \
-                    '",\n"song_duration" : "' + str(song.duration) + '"\n},\n'
-    response += "]"
+    response = '{\n"song_name" : "' + str(random_song.name) + \
+               '",\n"song_artist" : "' + str(random_song.author) + \
+               '",\n"song_album" : "' + str(random_song.album) + \
+               '",\n"song_duration" : "' + str(random_song.duration) + '"\n},\n'
 
     return HttpResponse(response)
