@@ -1,10 +1,11 @@
 import os
+from datetime import datetime
 import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'IS_Project.settings')
 
 django.setup()
-from myapp.models import Song, User, CollaborativeList
+from myapp.models import Song, User, CollaborativeList, Concert
 
 python_songs = [
     {
@@ -69,6 +70,7 @@ python_users = [
     },
 ]
 
+from django.utils.timezone import datetime
 
 def populateDatabase():
     playlist1 = CollaborativeList(name="My First List")
@@ -90,6 +92,11 @@ def populateDatabase():
             playlist1.users.add(u)
         else:
             playlist2.users.add(u)
+
+    concert = Concert(title="David bisban en concierto", datetime="01/03/2021 18:00",
+                      address="calle de Bailen", lat=40.4179591, lon=-3.7165007)
+
+    concert.save()
 
 
 def addUser(name, email):

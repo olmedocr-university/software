@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from myapp.models import CollaborativeList, Song
+from myapp.models import CollaborativeList, Song, Concert
+from decimal import Decimal
+import math
 from django.http import HttpResponse
 import random
 
@@ -47,7 +49,7 @@ def sortList(request, playlistID):
         response += '"' + str(song) + '", '
     response += ' ]'
     return HttpResponse('"message" : ' + response)
-
+  
 
 # GET recognise_song
 def recognise_song(request):
@@ -62,3 +64,24 @@ def recognise_song(request):
                '",\n"song_duration" : "' + str(random_song.duration) + '"\n},\n'
 
     return HttpResponse(response)
+
+  
+def getConcerts(request, lat, lon):
+    nearBy_Concerts = list()
+
+    try:
+        concerts = Concert.objects.all()
+        for item in concerts:
+            distance = math.sqrt(math.pow(item.lat - Decimal(lat), 2) + math.pow(item.lon - Decimal(lon), 2))
+
+
+            if distance < 500:
+                nearBy_Concerts.append(item)
+    except Concert.DoesNotExist:
+        return HttpResponse('"message" : "concert does not exist"')
+
+    response = "[ "
+    for element in nearBy_Concerts:
+        response += '"' + str(element) + '", '
+    response += ' ]'
+    return HttpResponse('"message" : ' + response)
