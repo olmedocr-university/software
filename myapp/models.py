@@ -38,3 +38,12 @@ class Concert(models.Model):
 
     def __str__(self):
         return self.title + " - " + self.address + " - " + self.datetime
+
+
+class Ticket(models.Model):
+    zone = models.CharField(max_length=128, default="none")
+    price = models.DecimalField(decimal_places=2, max_digits=6, default=0.0)
+    concert = models.ForeignKey(Concert, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.zone + " - " + self.price
