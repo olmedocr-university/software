@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from myapp.models import CollaborativeList, Song, Concert
+from myapp.models import CollaborativeList, Song, Concert, Ticket
 from decimal import Decimal
 import math
 from django.http import HttpResponse
@@ -84,4 +84,25 @@ def getConcerts(request, lat, lon):
     for element in nearBy_Concerts:
         response += '"' + str(element) + '", '
     response += ' ]'
+    return HttpResponse('"message" : ' + response)
+
+
+def get_tickets(request, concert_id):
+    try:
+        concert = Concert.objects.get(id=concert_id)
+        tickets = concert.ticket_set.all()
+        # TODO: pillar el concierto en cuestion y despues pillar los tickets asociados a el
+    except Ticket.DoesNotExist:
+        return HttpResponse('"message" : "Tickets do not exist for this concert"')
+    except Concert.DoesNotExist:
+        return HttpResponse('"message" : "Concert does not exist, invalid concert id"')
+
+    response = '{[ '
+    for ticket in tickets:
+        response += '{' + \
+            '"zone": "' + str(ticket.zone) + '",'\
+            '"price": ' + str(ticket.price) + \
+            '},'
+    response = response[:-1]
+    response += ' ]}'
     return HttpResponse('"message" : ' + response)

@@ -23,5 +23,6 @@ urlpatterns = [
     path('playlist/<int:playlistID>/removeSong/', views.removeSongFromPlaylist),
     path('playlist/<int:playlistID>/sortedList', views.sortList),
     path('recognise/', views.recognise_song),
-    path('user/getConcerts/<lat>,<lon>', views.getConcerts)
+    path('concerts/<lat>,<lon>', views.getConcerts),
+    path('concert/<int:concert_id>/tickets', views.get_tickets)
 ]
