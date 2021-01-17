@@ -3,6 +3,7 @@ from myapp.models import CollaborativeList, Song, Concert
 from decimal import Decimal
 import math
 from django.http import HttpResponse
+import random
 
 
 # Create your views here.
@@ -48,12 +49,25 @@ def sortList(request, playlistID):
         response += '"' + str(song) + '", '
     response += ' ]'
     return HttpResponse('"message" : ' + response)
+  
 
+# GET recognise_song
+def recognise_song(request):
+    try:
+        random_song = Song.objects.get(id=random.randint(0, 6))
+    except Song.DoesNotExist:
+        return HttpResponse('"message" : "Could not recognise song"')
+
+    response = '{\n"song_name" : "' + str(random_song.name) + \
+               '",\n"song_artist" : "' + str(random_song.author) + \
+               '",\n"song_album" : "' + str(random_song.album) + \
+               '",\n"song_duration" : "' + str(random_song.duration) + '"\n},\n'
+
+    return HttpResponse(response)
+
+  
 def getConcerts(request, lat, lon):
-
     nearBy_Concerts = list()
-
-
 
     try:
         concerts = Concert.objects.all()
