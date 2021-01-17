@@ -91,18 +91,17 @@ def get_tickets(request, concert_id):
     try:
         concert = Concert.objects.get(id=concert_id)
         tickets = concert.ticket_set.all()
-        # TODO: pillar el concierto en cuestion y despues pillar los tickets asociados a el
     except Ticket.DoesNotExist:
         return HttpResponse('"message" : "Tickets do not exist for this concert"')
     except Concert.DoesNotExist:
         return HttpResponse('"message" : "Concert does not exist, invalid concert id"')
 
-    response = '{[ '
+    response = '[ '
     for ticket in tickets:
         response += '{' + \
             '"zone": "' + str(ticket.zone) + '",'\
             '"price": ' + str(ticket.price) + \
             '},'
     response = response[:-1]
-    response += ' ]}'
+    response += ' ]'
     return HttpResponse('"message" : ' + response)
