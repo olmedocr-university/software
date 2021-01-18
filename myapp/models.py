@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 
 # Create your models here.
@@ -47,3 +48,13 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.zone + " - " + self.price
+
+
+class DJSession(models.Model):
+    sessionCode = models.CharField(max_length=7, default="0000000")
+    queue = models.ManyToManyField(Song)
+    sessionCreator = models.IntegerField(default=-1)
+    sessionMembers = ArrayField(models.IntegerField(), default=list())
+
+    def __str__(self):
+        return "DJSession from: " + str(self.sessionCreator) + " (" + self.sessionCode + ")"

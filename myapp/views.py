@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from myapp.models import CollaborativeList, Song, Concert, Ticket
+from myapp.models import CollaborativeList, Song, Concert, Ticket, DJSession, User
 from decimal import Decimal
 import math
 from django.http import HttpResponse
 import random
+import string
 
 
 # Create your views here.
@@ -49,7 +50,7 @@ def sortList(request, playlistID):
         response += '"' + str(song) + '", '
     response += ' ]'
     return HttpResponse('"message" : ' + response)
-  
+
 
 # GET recognise_song
 def recognise_song(request):
@@ -65,15 +66,13 @@ def recognise_song(request):
 
     return HttpResponse(response)
 
-  
+
 def getConcerts(request, lat, lon):
     nearBy_Concerts = list()
-
     try:
         concerts = Concert.objects.all()
         for item in concerts:
             distance = math.sqrt(math.pow(item.lat - Decimal(lat), 2) + math.pow(item.lon - Decimal(lon), 2))
-
 
             if distance < 500:
                 nearBy_Concerts.append(item)
@@ -99,9 +98,36 @@ def get_tickets(request, concert_id):
     response = '[ '
     for ticket in tickets:
         response += '{' + \
-            '"zone": "' + str(ticket.zone) + '",'\
-            '"price": ' + str(ticket.price) + \
-            '},'
+                    '"zone": "' + str(ticket.zone) + '",' \
+                                                     '"price": ' + str(ticket.price) + \
+                    '},'
     response = response[:-1]
     response += ' ]'
     return HttpResponse('"message" : ' + response)
+
+
+def createDJSession(request, userID):
+    try:
+        # GENERAR CÓDIGO ALEATORIO ALFANUMÉRICO DE 7 DÍGITOS
+        sessionCode = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+
+        # LA LISTA DE MIEMBROS CUENTA AL MENOS CON EL CREADOR
+        sessionMembers = [userID]
+
+        # LISTA DE CANCIONES
+        queue = list()
+
+        session = DJSession(sessionCode=sessionCode, sessionCreator=userID, sessionMembers=sessionMembers)
+
+        session.save()
+
+        session.queue.set(queue)
+
+        session.save()
+
+    except DJSession.DoesNotExist:
+        return HttpResponse('"message" : "Could not create session"')
+
+    response = 'DJ SESSION WAS SUCCESFULLY CREATED'
+
+    return HttpResponse(response)

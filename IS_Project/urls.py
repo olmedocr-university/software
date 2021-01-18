@@ -24,5 +24,6 @@ urlpatterns = [
     path('playlist/<int:playlistID>/sortedList', views.sortList),
     path('recognise/', views.recognise_song),
     path('concerts/<lat>,<lon>', views.getConcerts),
-    path('concert/<int:concert_id>/tickets', views.get_tickets)
+    path('concert/<int:concert_id>/tickets', views.get_tickets),
+    path('djsession/<int:userID>/createSession', views.createDJSession)
 ]
